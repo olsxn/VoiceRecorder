@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">VoiceRecorder</string>
+    <string name="startButton">Start</string>
+    <string name="stop">Stop</string>
+    <string name="record_an_audio_file">Record an audio file</string>
+    <string name="start_recording">Start Recording</string>
+    <string name="stop_recording">Stop Recording</string>
+    <string name="test">Second Activity Active</string>
+    <string name="menu">menu</string>
+    <string name="settings">Settings</string>
+</resources>
