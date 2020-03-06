@@ -8,4 +8,5 @@
     <color name="buttonGrey">#CCCCCC</color>
     <color name="menuItemLightGrey">#BDBDBD</color>
     <color name="menuItemDarkGrey">#7D7D7D</color>
+    <color name="white">#FFFFFF</color>
 </resources>

@@ -1,0 +1,43 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+        <ListPreference
+            app:key="codec"
+            app:title="@string/audio_codec_title"
+            app:summary="@string/audio_codec_summary"
+            app:defaultValue="1"
+            app:entries="@array/codecListArray"
+            app:entryValues="@array/codecListValues"/>
+
+
+        <ListPreference
+            app:key="sampleRate"
+            app:title="@string/sample_rate_title"
+            app:summary="@string/sample_rate_summary"
+            app:defaultValue="1"
+            app:entries="@array/sampleRateListArray"
+            app:entryValues="@array/sampleRateListValues"/>
+
+
+        <SeekBarPreference
+            android:clickable="false"
+            app:key="maxFileSize"
+            app:summary="@string/max_file_size_summary"
+            app:title="@string/max_file_size_title" />
+
+
+        <SwitchPreferenceCompat
+            app:key="keepScreenAwake"
+            app:title="@string/keep_screen_awake_summary"
+            app:summary="@string/keep_screen_awake_summary"/>
+
+
+        <SwitchPreferenceCompat
+            app:key="doNotDisturb"
+            app:title="@string/do_not_disturb_title"
+            app:summary="@string/do_not_disturb_summary"/>
+
+
+        <Preference
+            app:key="fileLocation"
+            app:title="@string/recording_location_title"/>
+</PreferenceScreen>

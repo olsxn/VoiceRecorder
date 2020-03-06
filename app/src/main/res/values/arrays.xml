@@ -1,0 +1,38 @@
+<resources>
+    <!-- Audio codec list  -->
+    <string-array name="codecListArray">
+        <item>Audio codec 1</item>
+        <item>Audio codec 2</item>
+        <item>Audio codec 3</item>
+    </string-array>
+
+    <string-array name="codecListValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <!-- Sample rate list  -->
+    <string-array name="sampleRateListArray">
+        <item>Sample rate 1</item>
+        <item>Sample rate 2</item>
+        <item>Sample rate 3</item>
+    </string-array>
+
+    <string-array name="sampleRateListValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <!-- Reply Preference -->
+    <string-array name="reply_entries">
+        <item>Reply</item>
+        <item>Reply to all</item>
+    </string-array>
+
+    <string-array name="reply_values">
+        <item>reply</item>
+        <item>reply_all</item>
+    </string-array>
+
+</resources>

@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
     //creates intent to start Settings activity
     public void openSettings() {
-        Intent intent = new Intent(this, settings.class);
+        Intent intent = new Intent(this, Settings.class);
         startActivity(intent);
     }
 

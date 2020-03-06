@@ -8,4 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!--  Settings page theme  -->
+    <style name="PreferenceScreen" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColor">@color/menuItemLightGrey</item>
+        <item name="android:textColorSecondary">@color/menuItemLightGrey</item>
+    </style>
+
 </resources>
