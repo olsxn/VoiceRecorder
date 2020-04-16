@@ -25,18 +25,16 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = "AudioRecordTest";
+    public static final String LOG_TAG = "AudioRecordTest";
+    private  static MediaRecorder mediaRecorder;
     final int REQUEST_PERMISSION_CODE = 1000;
 
-    String fileName = "";
+   private static String fileName = "";
 
-//    boolean recording = false;
-
-    MediaRecorder mediaRecorder;
-    Button startButton, stopButton;
+   Button startButton, stopButton;
 
 
-    private void setUpMediaRecorder() {
+    public static void setUpMediaRecorder() {
         // set up new MediaRecorder here so that it is done each time user starts recording
         mediaRecorder = new MediaRecorder();
         //set new fileName each time mediaRecorder is setup with UUID
@@ -108,11 +106,6 @@ public class MainActivity extends AppCompatActivity {
                 recordAudioResult == PackageManager.PERMISSION_GRANTED && readExternalStorageResult == PackageManager.PERMISSION_GRANTED;
     }
 
-    //usable in future
-    private boolean checkRecording(boolean recording) {
-        return recording;
-    }
-
     //menu in the top right
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -145,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void openAbout() {
         //create intent to open About page activity
+        Intent intent = new Intent(this, About.class);
+        startActivity(intent);
     }
 
     @Override

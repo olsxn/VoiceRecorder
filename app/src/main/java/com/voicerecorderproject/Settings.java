@@ -3,6 +3,7 @@ package com.voicerecorderproject;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
@@ -38,18 +39,32 @@ public class Settings extends AppCompatActivity {
                 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    locationSearch();
+//                    locationSearch();
                     return true;
                 }
             });
+
+            final Preference audioCodec = findPreference("codec");
+            audioCodec.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    // in here I need to be able to change which audio codec is used, maybe seperate each option choice into seperate
+                    // methods in MainActivity()
+                    if(newValue == "1") {
+                        System.out.println("Clicked");
+                    }
+
+                    return true;
+                }
+                });
         }
     }
 
     // search through phone's storage
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private static void locationSearch() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("audio/*");
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//    private static void locationSearch() {
+//        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+//        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        intent.setType("audio/*");
+//    }
 }
