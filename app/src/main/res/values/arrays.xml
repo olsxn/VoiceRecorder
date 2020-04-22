@@ -1,22 +1,30 @@
 <resources>
     <!-- Audio codec list  -->
     <string-array name="codecListArray">
-        <item>Audio codec 1</item>
-        <item>Audio codec 2</item>
-        <item>Audio codec 3</item>
+        <item>AAC</item>
+        <item>AAC_ELD</item>
+        <item>AMR_NB</item>
+        <item>AMR_WB</item>
+        <item>HE_AAC</item>
+        <item>OPUS</item>
+        <item>VORBIS</item>
     </string-array>
 
     <string-array name="codecListValues">
         <item>1</item>
         <item>2</item>
         <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
     </string-array>
 
     <!-- Sample rate list  -->
     <string-array name="sampleRateListArray">
-        <item>Sample rate 1</item>
-        <item>Sample rate 2</item>
-        <item>Sample rate 3</item>
+        <item>22KHz</item>
+        <item>44.1KHz</item>
+        <item>48KHz</item>
     </string-array>
 
     <string-array name="sampleRateListValues">
@@ -24,6 +32,48 @@
         <item>2</item>
         <item>3</item>
     </string-array>
+
+    <!-- Encoding rate list  -->
+    <string-array name="encodingRateList">
+        <item>24kbps</item>
+        <item>56kbps</item>
+        <item>96kbps</item>
+        <item>128kbps</item>
+        <item>196kbps</item>
+    </string-array>
+
+    <string-array name="encodingRateValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <!-- Output list  -->
+    <string-array name="outputListArray">
+        <item>AAC_ADTS</item>
+        <item>AMR_NB</item>
+        <item>AMR_WB</item>
+        <item>MPEG_2_TS</item>
+        <item>MPEG_4</item>
+        <item>OGG</item>
+        <item>THREE_GPP</item>
+        <item>WEBM</item>
+    </string-array>
+
+    <string-array name="outputListValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+
+
     <!-- Reply Preference -->
     <string-array name="reply_entries">
         <item>Reply</item>

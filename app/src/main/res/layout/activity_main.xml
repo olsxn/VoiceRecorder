@@ -8,30 +8,13 @@
     android:background="@color/backgroundGrey"
     tools:context=".MainActivity">
 
-    <TextView
-        android:text="@string/record_an_audio_file"
-        android:textSize="24sp"
-        android:textColor="@color/menuItemLightGrey"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_alignParentTop="true"/>
-
     <Button
         android:id="@+id/startButton"
-        android:text="@string/start_recording"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
         android:layout_marginBottom="20dp"
-        android:layout_centerVertical="true"/>
-
-    <Button
-        android:id="@+id/stopButton"
-        android:text="@string/stop_recording"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/startButton"
-        android:layout_centerInParent="true" />
+        android:background="@drawable/circle"
+        android:text="@string/start_recording" />
 
 </RelativeLayout>

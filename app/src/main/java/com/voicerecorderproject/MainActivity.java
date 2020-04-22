@@ -2,8 +2,10 @@ package com.voicerecorderproject;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -26,26 +29,219 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = "AudioRecordTest";
-    private  static MediaRecorder mediaRecorder;
+    private static MediaRecorder mediaRecorder;
+
     final int REQUEST_PERMISSION_CODE = 1000;
+    private int clickCount = 0;
 
-   private static String fileName = "";
+    Button startButton;
 
-   Button startButton, stopButton;
+    // handle first time run of app
+    final String PREFS_NAME = "initialSettingsFile";
+    SharedPreferences initialSettings = null;
+
+    // get settings from Settings activity
+    final String PREFERENCES_NAME = "settingsFile";
+    SharedPreferences settings = null;
+    int outputFormat;
+    int sampleRate;
+    int bitRate;
+    int codec;
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        // create/get prefs
+        initialSettings = getSharedPreferences(PREFS_NAME, 0);
+        settings = getSharedPreferences(PREFERENCES_NAME, 0);
+
+        // init button var
+        startButton = findViewById(R.id.startButton);
+
+        // check permissions at runtime
+        if (!checkPermissions()) {
+            requestPermission();
+        }
+
+        // check if its the first time the app has been run
+        checkIfFirstTime();
+
+        //when record is clicked
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.Q)
+            @Override
+            public void onClick(View v) {
+                clickCount++;
+                if (clickCount == 1) {
+                    initialiseMediaRecorder();
+                    startRecording();
+                    startButton.setText(R.string.stop_recording);
+                    Toast.makeText(MainActivity.this, "Recording started", Toast.LENGTH_SHORT).show();
+                } else if (clickCount == 2) {
+                    stopRecording();
+                    startButton.setText(R.string.start_recording);
+                    Toast.makeText(MainActivity.this, "Recording stopped", Toast.LENGTH_SHORT).show();
+                    clickCount = 0;
+                }
+            }
+        });
+    }
+
+    // apply the int values from settings prefs in the same way as method below
+    // if they can't be retrieved used default values
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void applySettings() {
+        // assign ints
+        outputFormat = settings.getInt("outputFormat", 5);
+        sampleRate = settings.getInt("sampleRate", 2);
+        bitRate = settings.getInt("bitRate", 3);
+        codec = settings.getInt("codec", 5);
+        // apply
+        setOutputFormat(outputFormat);
+        setAudioSamplingRate(sampleRate);
+        setAudioEncodingBitRate(bitRate);
+        setAudioCodec(codec);
+    }
+
+    // default settings before user changes them
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static void setDefaults() {
+        // variables to use as defaults
+        int defCodec = 5;
+        int defOutput = 5;
+        int defSample = 2;
+        int defBit = 3;
+        // set defaults
+        setOutputFormat(defOutput);
+        setAudioSamplingRate(defSample);
+        setAudioEncodingBitRate(defBit);
+        setAudioCodec(defCodec);
+    }
 
 
-    public static void setUpMediaRecorder() {
-        // set up new MediaRecorder here so that it is done each time user starts recording
+    // sets up mediaRecorder but only when the app is started for the first time
+    // using defaults above
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private static void firstTimeInitialise() {
         mediaRecorder = new MediaRecorder();
-        //set new fileName each time mediaRecorder is setup with UUID
-        fileName = Environment.getExternalStorageDirectory() + File.separator + Environment.DIRECTORY_DOWNLOADS + File.separator +
-                UUID.randomUUID().toString() + "_audioRecordTest.m4a";
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
-        mediaRecorder.setAudioSamplingRate(44100);
-        mediaRecorder.setAudioEncodingBitRate(96000);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC);
+        setDefaults();
+        setUpFile();
+    }
+
+    // set up mediaRecorder in this method so it can be called in Settings activity
+    // audio source is also set as it will always be the default the device is currently using
+    // set up file location here also
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void initialiseMediaRecorder() {
+        mediaRecorder = new MediaRecorder();
+        setAudioSource();
+        applySettings();
+        setUpFile();
+    }
+
+    public static void setAudioSource() {
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+    }
+
+    public static void setUpFile() {
+        //set new fileName each time mediaRecorder is setup with UUID
+        String fileName = Environment.getExternalStorageDirectory() + File.separator + Environment.DIRECTORY_DOWNLOADS + File.separator +
+                UUID.randomUUID().toString() + "_audioRecordTest.m4a";
         mediaRecorder.setOutputFile(fileName);
+    }
+
+    public static void setAudioSamplingRate(int sampleRate) {
+        switch (sampleRate) {
+            case 1:
+                mediaRecorder.setAudioSamplingRate(22000);
+                break;
+            case 2:
+                mediaRecorder.setAudioSamplingRate(44100);
+                break;
+            case 3:
+                mediaRecorder.setAudioSamplingRate(48000);
+                break;
+        }
+    }
+
+    public static void setAudioEncodingBitRate(int bitRate) {
+        switch (bitRate) {
+            case 1:
+                mediaRecorder.setAudioEncodingBitRate(24000);
+                break;
+            case 2:
+                mediaRecorder.setAudioEncodingBitRate(56000);
+                break;
+            case 3:
+                mediaRecorder.setAudioEncodingBitRate(96000);
+                break;
+            case 4:
+                mediaRecorder.setAudioEncodingBitRate(128000);
+                break;
+            case 5:
+                mediaRecorder.setAudioEncodingBitRate(196000);
+                break;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static void setOutputFormat(int outputFormat) {
+        switch (outputFormat) {
+            case 1:
+                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
+                break;
+            case 2:
+                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+                break;
+            case 3:
+                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_WB);
+                break;
+            case 4:
+                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_2_TS);
+                break;
+            case 5:
+                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+                break;
+            case 6:
+                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.OGG);
+                break;
+            case 7:
+                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                break;
+            case 8:
+                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.WEBM);
+                break;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static void setAudioCodec(int codec) {
+        switch (codec) {
+            case 1:
+                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+                break;
+            case 2:
+                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC_ELD);
+                break;
+            case 3:
+                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                break;
+            case 4:
+                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
+                break;
+            case 5:
+                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC);
+                break;
+            case 6:
+                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.OPUS);
+                break;
+            case 7:
+                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.VORBIS);
+                break;
+        }
     }
 
     private void releaseMediaRecorder() {
@@ -65,7 +261,6 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("" + e);    //to display the error
         }
         mediaRecorder.start();
-        startButton.setEnabled(false);
     }
 
     //stop and call release method
@@ -142,42 +337,16 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        startButton = findViewById(R.id.startButton);
-        stopButton = findViewById(R.id.stopButton);
 
-        //check permissions at runtime
-        if (!checkPermissions()) {
-            requestPermission();
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void checkIfFirstTime() {
+        if (initialSettings.getBoolean("my_first_time", true)) {
+            Log.d("Comments", "First time run");
+            firstTimeInitialise();
+            // apply runs in background rather than immediately like commit
+            initialSettings.edit().putBoolean("my_first_time", false).apply();
         }
-
-        //when record is clicked
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setUpMediaRecorder();
-                startRecording();
-                startButton.setEnabled(false);
-//                recording = true;
-                Toast.makeText(MainActivity.this, "Recording started", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        //when stop is clicked
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stopRecording();
-//                recording = false;
-                startButton.setEnabled(true);
-                Toast.makeText(MainActivity.this, "Recording stopped", Toast.LENGTH_SHORT).show();
-            }
-        });
-
     }
 
     @Override

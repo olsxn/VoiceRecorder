@@ -4,7 +4,7 @@
             app:key="codec"
             app:title="@string/audio_codec_title"
             app:summary="@string/audio_codec_summary"
-            app:defaultValue="1"
+            app:defaultValue="5"
             app:entries="@array/codecListArray"
             app:entryValues="@array/codecListValues"/>
 
@@ -13,19 +13,27 @@
             app:key="sampleRate"
             app:title="@string/sample_rate_title"
             app:summary="@string/sample_rate_summary"
-            app:defaultValue="1"
+            app:defaultValue="2"
             app:entries="@array/sampleRateListArray"
             app:entryValues="@array/sampleRateListValues"/>
 
+        <ListPreference
+            app:key="bitRate"
+            app:title="@string/encoding_title"
+            app:summary="@string/encoding_summary"
+            app:defaultValue="3"
+            app:entries="@array/encodingRateList"
+            app:entryValues="@array/encodingRateValues"/>
 
-        <SeekBarPreference
-            android:clickable="false"
-            app:key="maxFileSize"
-            app:summary="@string/max_file_size_summary"
-            app:title="@string/max_file_size_title" />
+        <ListPreference
+            app:key="outputFormat"
+            app:title="@string/output_title"
+            app:summary="@string/output_summary"
+            app:defaultValue="5"
+            app:entries="@array/outputListArray"
+            app:entryValues="@array/outputListValues"/>
 
-
-        <SwitchPreferenceCompat
+    <SwitchPreferenceCompat
             app:key="keepScreenAwake"
             app:title="@string/keep_screen_awake_summary"
             app:summary="@string/keep_screen_awake_summary"/>
