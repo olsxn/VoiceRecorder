@@ -53,9 +53,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         // create/get prefs
         initialSettings = getSharedPreferences(PREFS_NAME, 0);
         settings = getSharedPreferences(PREFERENCES_NAME, 0);
+
+        // tests
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("test", "test").apply();
+        String test = settings.getString("test", "didn't work");
+        Log.d("CHeck", test );
 
         // init button var
         startButton = findViewById(R.id.startButton);

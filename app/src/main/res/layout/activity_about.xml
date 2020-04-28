@@ -1,9 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundGrey"
     tools:context=".About">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+<!-- things to explain to the user in here:
+           - bit rate
+           - sample rate
+           - codec
+           - output format
+           - who I am
+           - how to use app
+           - where recordings will save -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="hello"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/expandableTextViewBit"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-30dp"
+        android:layout_marginTop="50dp"
+        android:layout_weight="1"
+        android:text="@string/test_text" />
+
+    <TextView
+        android:id="@+id/expandableTextViewSample"
+        android:layout_marginTop="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello this is a test fro the expandable text view for saample"/>
+
+    <TextView
+        android:id="@+id/expandableTextViewCodec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageButton
+        android:id="@+id/expandBtnBit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:background="@color/backgroundGrey"
+        android:contentDescription="@string/plus_sign"
+        app:srcCompat="@drawable/ic_add_24px" />
+
+    <ImageButton
+        android:id="@+id/expandBtnSample"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:background="@color/backgroundGrey"
+        android:contentDescription="@string/plus_sign"
+        app:srcCompat="@drawable/ic_add_24px" />
+
+    <ImageButton
+        android:id="@+id/expandBtnCodec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="180dp"
+        android:background="@color/backgroundGrey"
+        android:contentDescription="@string/plus_sign"
+        app:srcCompat="@drawable/ic_add_24px" />
+
+</RelativeLayout>

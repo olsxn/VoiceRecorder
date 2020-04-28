@@ -11,4 +11,9 @@
         <item name="colorAccent">@color/colorPrimaryDark</item>
     </style>
 
+    <!-- About page theme  -->
+    <style name="AboutTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+    </style>
+
 </resources>
