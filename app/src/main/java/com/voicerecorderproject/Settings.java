@@ -1,7 +1,5 @@
 package com.voicerecorderproject;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -28,8 +26,6 @@ public class Settings extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
@@ -44,7 +40,7 @@ public class Settings extends AppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     String audioInputValue = newValue.toString();
-                    new SettingsPreferences(getContext()).handleAudioCodecChange(audioInputValue);
+                    new SettingsPreferences().handleAudioCodecChange(audioInputValue);
                     return true;
                 }
             });

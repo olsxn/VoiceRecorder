@@ -1,6 +1,7 @@
 package com.voicerecorderproject;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -8,6 +9,7 @@ import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,14 +36,15 @@ public class MainActivity extends AppCompatActivity {
     final int REQUEST_PERMISSION_CODE = 1000;
     private int clickCount = 0;
 
+    private static Context appContext;
+
     Button startButton;
 
     // handle first time run of app
     final String PREFS_NAME = "initialSettingsFile";
     SharedPreferences initialSettings = null;
 
-    // get settings from Settings activity
-    final String PREFERENCES_NAME = "settingsFile";
+    // prefs
     SharedPreferences settings = null;
     int outputFormat;
     int sampleRate;
@@ -54,9 +57,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // sort context out
+        appContext = getApplicationContext();
+
         // create/get prefs
         initialSettings = getSharedPreferences(PREFS_NAME, 0);
-        settings = getSharedPreferences(PREFERENCES_NAME, 0);
+        settings = PreferenceManager.getDefaultSharedPreferences(appContext);
 
         // tests
         SharedPreferences.Editor editor = settings.edit();
@@ -96,15 +102,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // getter for context
+    public static Context getAppContext() {
+        return appContext;
+    }
+
     // apply the int values from settings prefs in the same way as method below
     // if they can't be retrieved used default values
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public void applySettings() {
         // assign ints
-        outputFormat = settings.getInt("outputFormat", 5);
-        sampleRate = settings.getInt("sampleRate", 2);
-        bitRate = settings.getInt("bitRate", 3);
-        codec = settings.getInt("codec", 5);
+        outputFormat = Integer.parseInt(settings.getString("outputFormat", "5"));
+        sampleRate = Integer.parseInt(settings.getString("sampleRate", "2"));
+        bitRate = Integer.parseInt(settings.getString("bitRate", "3"));
+        codec = Integer.parseInt(settings.getString("codec", "5"));
         // apply
         setOutputFormat(outputFormat);
         setAudioSamplingRate(sampleRate);
