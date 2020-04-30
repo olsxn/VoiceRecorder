@@ -1,5 +1,7 @@
 package com.voicerecorderproject;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -12,6 +14,7 @@ import androidx.preference.PreferenceFragmentCompat;
 @RequiresApi(api = Build.VERSION_CODES.Q)
 public class Settings extends AppCompatActivity {
 
+    private NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,16 @@ public class Settings extends AppCompatActivity {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     String bitRateValue = newValue.toString();
                     new SettingsPreferences().handleBitRateChange(bitRateValue);
+                    return true;
+                }
+            });
+
+            final Preference dnd = findPreference("doNotDisturb");
+            assert  dnd != null;
+            dnd.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+
                     return true;
                 }
             });

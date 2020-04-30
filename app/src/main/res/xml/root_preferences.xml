@@ -8,7 +8,6 @@
             app:entries="@array/codecListArray"
             app:entryValues="@array/codecListValues"/>
 
-
         <ListPreference
             app:key="sampleRate"
             app:title="@string/sample_rate_title"
@@ -38,12 +37,10 @@
             app:title="@string/keep_screen_awake_summary"
             app:summary="@string/keep_screen_awake_summary"/>
 
-
         <SwitchPreferenceCompat
             app:key="doNotDisturb"
             app:title="@string/do_not_disturb_title"
             app:summary="@string/do_not_disturb_summary"/>
-
 
         <Preference
             app:key="fileLocation"
