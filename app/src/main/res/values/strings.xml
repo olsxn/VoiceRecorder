@@ -38,4 +38,6 @@
     <string name="recording_location_title">Recording location</string>
     <string name="plus_sign">plus sign</string>
     <string name="test_text">Hello this is a test for the expandable text view that I will use to explain various parts of the app</string>
+    <string name="inputText">Change your file name here</string>
+    <string name="changeButton">change</string>
 </resources>

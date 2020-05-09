@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,12 +33,17 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = "AudioRecordTest";
+    public static String inputtedText = null;
+    public static String fileName = null;
     private static MediaRecorder mediaRecorder;
     final int REQUEST_PERMISSION_CODE = 1000;
     private int clickCount = 0;
     private static Context appContext;
 
     Button startButton;
+    Button changeButton;
+    EditText changeText;
+
 
     // handle first time run of app
     final String PREFS_NAME = "initialSettingsFile";
@@ -63,8 +69,10 @@ public class MainActivity extends AppCompatActivity {
         initialSettings = getSharedPreferences(PREFS_NAME, 0);
         settings = PreferenceManager.getDefaultSharedPreferences(appContext);
 
-        // init button var
+        // init button/text vars
         startButton = findViewById(R.id.startButton);
+        changeButton = findViewById(R.id.changeButton);
+        changeText = findViewById(R.id.editText);
 
         // check permissions at runtime
         if (!checkPermissions()) {
@@ -76,6 +84,13 @@ public class MainActivity extends AppCompatActivity {
 
         // handle the keep screen on option in on create
         handleScreen();
+
+        changeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inputtedText = changeText.getText().toString();
+            }
+        });
 
         // when record is clicked: initialise MediaRecorder, turn DND on (if wanted), record
         // click count is used in order to change text on the button
@@ -185,8 +200,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static void setUpFile() {
         //set new fileName each time mediaRecorder is setup with UUID
-        String fileName = Environment.getExternalStorageDirectory() + File.separator + Environment.DIRECTORY_DOWNLOADS + File.separator +
-                UUID.randomUUID().toString() + "_audioRecordTest.m4a";
+        // UUID.randomUUID().toString()
+        String fileName = Environment.getExternalStorageDirectory() + File.separator +
+                Environment.DIRECTORY_DOWNLOADS + File.separator + inputtedText;
         mediaRecorder.setOutputFile(fileName);
     }
 
