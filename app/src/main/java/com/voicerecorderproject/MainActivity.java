@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -32,10 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = "AudioRecordTest";
     private static MediaRecorder mediaRecorder;
-
     final int REQUEST_PERMISSION_CODE = 1000;
     private int clickCount = 0;
-
     private static Context appContext;
 
     Button startButton;
@@ -64,12 +63,6 @@ public class MainActivity extends AppCompatActivity {
         initialSettings = getSharedPreferences(PREFS_NAME, 0);
         settings = PreferenceManager.getDefaultSharedPreferences(appContext);
 
-        // tests
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("test", "test").apply();
-        String test = settings.getString("test", "didn't work");
-        Log.d("CHeck", test );
-
         // init button var
         startButton = findViewById(R.id.startButton);
 
@@ -81,7 +74,11 @@ public class MainActivity extends AppCompatActivity {
         // check if its the first time the app has been run
         checkIfFirstTime();
 
-        //when record is clicked
+        // handle the keep screen on option in on create
+        handleScreen();
+
+        // when record is clicked: initialise MediaRecorder, turn DND on (if wanted), record
+        // click count is used in order to change text on the button
         startButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override
@@ -89,17 +86,39 @@ public class MainActivity extends AppCompatActivity {
                 clickCount++;
                 if (clickCount == 1) {
                     initialiseMediaRecorder();
+                    if (checkIfDnd()) {
+                        new SettingsPreferences().doNotDisturbOn();
+                    }
                     startRecording();
                     startButton.setText(R.string.stop_recording);
-                    Toast.makeText(MainActivity.this, "Recording started", Toast.LENGTH_SHORT).show();
                 } else if (clickCount == 2) {
                     stopRecording();
+                    new SettingsPreferences().doNotDisturbOff();
                     startButton.setText(R.string.start_recording);
-                    Toast.makeText(MainActivity.this, "Recording stopped", Toast.LENGTH_SHORT).show();
                     clickCount = 0;
                 }
             }
         });
+    }
+
+    // check if do not disturb mode is preferred when recording
+    public boolean checkIfDnd() {
+        return settings.getBoolean("dnd", false);
+    }
+
+    public void handleScreen() {
+
+        if (checkScreen()) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+        else if (!checkScreen()) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
+
+    // check if keep screen awake is on, if so turn it on for the app
+    public boolean checkScreen() {
+        return settings.getBoolean("screen", false);
     }
 
     // getter for context
@@ -355,8 +374,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
-
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public void checkIfFirstTime() {
         if (initialSettings.getBoolean("my_first_time", true)) {
@@ -379,4 +396,10 @@ public class MainActivity extends AppCompatActivity {
         releaseMediaRecorder();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // handle the keep screen on option in on resume
+        handleScreen();
+    }
 }

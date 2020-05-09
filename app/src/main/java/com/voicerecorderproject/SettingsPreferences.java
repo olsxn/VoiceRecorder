@@ -1,8 +1,13 @@
 package com.voicerecorderproject;
 
+import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.provider.Settings;
+
 import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
@@ -11,9 +16,53 @@ public class SettingsPreferences {
 
     private Context contextOfApp = MainActivity.getAppContext();
     private SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(contextOfApp);
+    private NotificationManager notificationManager = (NotificationManager) contextOfApp.getSystemService(Context.NOTIFICATION_SERVICE);
+
+    void ifDndOn() {
+        SharedPreferences.Editor dndEditor = settings.edit();
+        dndEditor.putBoolean("dnd", true);
+        dndEditor.apply();
+    }
+
+    void ifDndOff() {
+        SharedPreferences.Editor dndEditor = settings.edit();
+        dndEditor.putBoolean("dnd", false);
+        dndEditor.apply();
+    }
+
+    void ifScreenOn() {
+        SharedPreferences.Editor screenEditor = settings.edit();
+        screenEditor.putBoolean("screen", true);
+        screenEditor.apply();
+    }
+
+    void ifScreenOff() {
+        SharedPreferences.Editor screenEditor = settings.edit();
+        screenEditor.putBoolean("screen", false);
+        screenEditor.apply();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void checkIfNotifGranted(Context context) {
+       if (!notificationManager.isNotificationPolicyAccessGranted()) {
+           Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+           context.startActivity(intent);
+       }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void doNotDisturbOff() {
+        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void doNotDisturbOn() {
+        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void handleBitRateChange(String bitRateValue) {
+    void handleBitRateChange(String bitRateValue) {
         SharedPreferences.Editor bitEditor = settings.edit();
         switch(bitRateValue) {
             case "1":
@@ -40,7 +89,7 @@ public class SettingsPreferences {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void handleSampleRateChange(String sampleRateValue) {
+    void handleSampleRateChange(String sampleRateValue) {
         SharedPreferences.Editor sampleEditor = settings.edit();
         switch (sampleRateValue) {
             case "1":
@@ -60,7 +109,7 @@ public class SettingsPreferences {
 
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void handleOutputFormatChange(String outputInputValue) {
+    void handleOutputFormatChange(String outputInputValue) {
         SharedPreferences.Editor formatEditor = settings.edit();
         switch (outputInputValue) {
             case "1":
@@ -100,7 +149,7 @@ public class SettingsPreferences {
 
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void handleAudioCodecChange(String value) {
+    void handleAudioCodecChange(String value) {
         SharedPreferences.Editor codecEditor = settings.edit();
         switch (value) {
             case "1":

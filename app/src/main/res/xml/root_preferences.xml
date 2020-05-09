@@ -40,7 +40,8 @@
         <SwitchPreferenceCompat
             app:key="doNotDisturb"
             app:title="@string/do_not_disturb_title"
-            app:summary="@string/do_not_disturb_summary"/>
+            app:summary="@string/do_not_disturb_summary"
+            app:defaultValue="false"/>
 
         <Preference
             app:key="fileLocation"
