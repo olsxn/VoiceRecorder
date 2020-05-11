@@ -7,12 +7,12 @@
     </style>
 
     <!--  Settings page theme  -->
-    <style name="PreferenceScreen" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="PreferenceScreen" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorAccent">@color/colorPrimaryDark</item>
     </style>
 
     <!-- About page theme  -->
-    <style name="AboutTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AboutTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorAccent">@color/colorPrimaryDark</item>
     </style>
 

@@ -43,7 +43,4 @@
             app:summary="@string/do_not_disturb_summary"
             app:defaultValue="false"/>
 
-        <Preference
-            app:key="fileLocation"
-            app:title="@string/recording_location_title"/>
 </PreferenceScreen>

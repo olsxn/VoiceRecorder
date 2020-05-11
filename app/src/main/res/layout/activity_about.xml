@@ -17,57 +17,121 @@
            - where recordings will save -->
 
     <TextView
+        android:id="@+id/titleHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="hello"
-        android:textSize="20sp"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:text="@string/about_this_app"
+        android:textSize="25sp"/>
 
     <TextView
-        android:id="@+id/expandableTextViewBit"
-        android:layout_width="200dp"
+        android:id="@+id/subtitle1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="-30dp"
-        android:layout_marginTop="50dp"
-        android:layout_weight="1"
-        android:text="@string/test_text" />
+        android:layout_below="@+id/titleHeader"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/about_the_settings"
+        android:textSize="20sp" />
 
     <TextView
-        android:id="@+id/expandableTextViewSample"
-        android:layout_marginTop="200dp"
+        android:id="@+id/audioCodecTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello this is a test fro the expandable text view for saample"/>
+        android:layout_below="@+id/subtitle1"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/audio_codec"
+        android:textSize="17sp"/>
 
     <TextView
-        android:id="@+id/expandableTextViewCodec"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <ImageButton
-        android:id="@+id/expandBtnBit"
+        android:id="@+id/audioCodecText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:background="@color/backgroundGrey"
-        android:contentDescription="@string/plus_sign"
-        app:srcCompat="@drawable/ic_add_24px" />
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/audioCodecTitle"
+        android:text="@string/codex_text"/>
 
-    <ImageButton
-        android:id="@+id/expandBtnSample"
+    <TextView
+        android:id="@+id/sampleRateTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
-        android:background="@color/backgroundGrey"
-        android:contentDescription="@string/plus_sign"
-        app:srcCompat="@drawable/ic_add_24px" />
+        android:layout_below="@+id/audioCodecText"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/sample_rate"
+        android:textSize="17sp"/>
 
-    <ImageButton
-        android:id="@+id/expandBtnCodec"
+    <TextView
+        android:id="@+id/sampleRateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="180dp"
-        android:background="@color/backgroundGrey"
-        android:contentDescription="@string/plus_sign"
-        app:srcCompat="@drawable/ic_add_24px" />
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/sampleRateTitle"
+        android:text="@string/sample_rate_text"/>
+
+    <TextView
+        android:id="@+id/bitRateTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sampleRateText"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/bit_rate"
+        android:textSize="17sp"/>
+
+    <TextView
+        android:id="@+id/bitRateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/bitRateTitle"
+        android:text="@string/bit_rate_text"/>
+
+    <TextView
+        android:id="@+id/outputTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bitRateText"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/output_format"
+        android:textSize="17sp"/>
+
+    <TextView
+        android:id="@+id/outputText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/outputTitle"
+        android:text="@string/output_text"/>
+
+    <TextView
+        android:id="@+id/subtitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/outputText"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/explanation"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/myName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/my_name"
+        android:textSize="12sp" />
+
+
 
 </RelativeLayout>

@@ -1,21 +1,15 @@
 package com.voicerecorderproject;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.WindowManager;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-
-
 
 @RequiresApi(api = Build.VERSION_CODES.Q)
 public class Settings extends AppCompatActivity {
@@ -24,7 +18,6 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
-
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.settings, new SettingsFragment())
@@ -33,8 +26,6 @@ public class Settings extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
@@ -91,7 +82,7 @@ public class Settings extends AppCompatActivity {
             });
 
             final Preference dnd = findPreference("doNotDisturb");
-            assert  dnd != null;
+            assert dnd != null;
             dnd.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -100,8 +91,7 @@ public class Settings extends AppCompatActivity {
                         new SettingsPreferences().checkIfNotifGranted(getContext());
                         new SettingsPreferences().ifDndOn();
                         Log.d("Test", "Switched on");
-                    }
-                    else if (boolCheck.equals("false")) {
+                    } else if (boolCheck.equals("false")) {
                         new SettingsPreferences().checkIfNotifGranted(getContext());
                         new SettingsPreferences().ifDndOff();
                         Log.d("Test", "Switched off");
@@ -118,8 +108,7 @@ public class Settings extends AppCompatActivity {
                     String screenCheck = newValue.toString();
                     if (screenCheck.equals("true")) {
                         new SettingsPreferences().ifScreenOn();
-                    }
-                    else if (screenCheck.equals("false")) {
+                    } else if (screenCheck.equals("false")) {
                         new SettingsPreferences().ifScreenOff();
                     }
                     return true;
@@ -128,4 +117,4 @@ public class Settings extends AppCompatActivity {
         }
     }
 
-    }
+}

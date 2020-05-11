@@ -9,6 +9,7 @@ import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -28,33 +30,33 @@ import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String LOG_TAG = "AudioRecordTest";
-    public static String inputtedText = null;
-    public static String fileName = null;
+    public static String inputtedText;
+    private static Context appContext;
     private static MediaRecorder mediaRecorder;
     final int REQUEST_PERMISSION_CODE = 1000;
-    private int clickCount = 0;
-    private static Context appContext;
-
+    // vars for first time run of app
+    final String PREFS_NAME = "initialSettingsFile";
+    public int count = 0;
     Button startButton;
     Button changeButton;
     EditText changeText;
-
-
-    // handle first time run of app
-    final String PREFS_NAME = "initialSettingsFile";
+    Chronometer chronometer;
     SharedPreferences initialSettings = null;
-
-    // prefs
+    // prefs to hold settings
     SharedPreferences settings = null;
     int outputFormat;
     int sampleRate;
     int bitRate;
     int codec;
+    private int clickCount = 0;
+
+    // getter for context
+    public static Context getAppContext() {
+        return appContext;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
@@ -62,17 +64,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // sort context out
+        // get context of app
         appContext = getApplicationContext();
 
         // create/get prefs
         initialSettings = getSharedPreferences(PREFS_NAME, 0);
         settings = PreferenceManager.getDefaultSharedPreferences(appContext);
 
-        // init button/text vars
+        // init button/text/timer vars
         startButton = findViewById(R.id.startButton);
         changeButton = findViewById(R.id.changeButton);
         changeText = findViewById(R.id.editText);
+        chronometer = findViewById(R.id.timer);
 
         // check permissions at runtime
         if (!checkPermissions()) {
@@ -85,15 +88,18 @@ public class MainActivity extends AppCompatActivity {
         // handle the keep screen on option in on create
         handleScreen();
 
+        // when change button is clicked file name is changed to the editText changeText
         changeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputtedText = changeText.getText().toString();
+                inputtedText
+                        = changeText.getText().toString();
             }
         });
 
-        // when record is clicked: initialise MediaRecorder, turn DND on (if wanted), record
-        // click count is used in order to change text on the button
+        // when record is clicked: call initialise MediaRecorder, turn DND on (if wanted), record
+        // turn timer on, change button colour and text
+        // click count introduced to implement changing button colour and text
         startButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override
@@ -105,15 +111,43 @@ public class MainActivity extends AppCompatActivity {
                         new SettingsPreferences().doNotDisturbOn();
                     }
                     startRecording();
-                    startButton.setText(R.string.stop_recording);
+                    turnTimerOn();
+                    recordClicked();
                 } else if (clickCount == 2) {
                     stopRecording();
-                    new SettingsPreferences().doNotDisturbOff();
-                    startButton.setText(R.string.start_recording);
+                    if (checkIfDnd()) {
+                        new SettingsPreferences().doNotDisturbOff();
+                    }
+                    turnTimerOff();
+                    stopClicked();
                     clickCount = 0;
                 }
             }
         });
+    }
+
+    // starts recording timer
+    public void turnTimerOn() {
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
+    }
+
+    // stops recording timer
+    public void turnTimerOff() {
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.stop();
+    }
+
+    // turns button red and changes text
+    public void recordClicked() {
+        startButton.setBackgroundResource(R.drawable.circle_red);
+        startButton.setText(R.string.stop_recording);
+    }
+
+    // resets button
+    public void stopClicked() {
+        startButton.setBackgroundResource(R.drawable.circle);
+        startButton.setText(R.string.start_recording);
     }
 
     // check if do not disturb mode is preferred when recording
@@ -121,24 +155,18 @@ public class MainActivity extends AppCompatActivity {
         return settings.getBoolean("dnd", false);
     }
 
+    // method to keep the screen on if checkScreen is true
     public void handleScreen() {
-
         if (checkScreen()) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }
-        else if (!checkScreen()) {
+        } else if (!checkScreen()) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
     }
 
-    // check if keep screen awake is on, if so turn it on for the app
+    // check if keep screen awake is on
     public boolean checkScreen() {
         return settings.getBoolean("screen", false);
-    }
-
-    // getter for context
-    public static Context getAppContext() {
-        return appContext;
     }
 
     // apply the int values from settings prefs in the same way as method below
@@ -159,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
     // default settings before user changes them
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public static void setDefaults() {
+    public void setDefaults() {
         // variables to use as defaults
         int defCodec = 5;
         int defOutput = 5;
@@ -172,15 +200,14 @@ public class MainActivity extends AppCompatActivity {
         setAudioCodec(defCodec);
     }
 
-
     // sets up mediaRecorder but only when the app is started for the first time
     // using defaults above
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    private static void firstTimeInitialise() {
+    private void firstTimeInitialise() {
         mediaRecorder = new MediaRecorder();
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+        setAudioSource();
         setDefaults();
-        setUpFile();
+        setUpFileFirstTime();
     }
 
     // set up mediaRecorder in this method so it can be called in Settings activity
@@ -194,19 +221,66 @@ public class MainActivity extends AppCompatActivity {
         setUpFile();
     }
 
-    public static void setAudioSource() {
+    public void setAudioSource() {
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
     }
 
-    public static void setUpFile() {
-        //set new fileName each time mediaRecorder is setup with UUID
-        // UUID.randomUUID().toString()
+    //set new fileName for first time, count is incremented
+    public void setUpFileFirstTime() {
         String fileName = Environment.getExternalStorageDirectory() + File.separator +
-                Environment.DIRECTORY_DOWNLOADS + File.separator + inputtedText;
+                Environment.DIRECTORY_DOWNLOADS + File.separator + "my_recording" + ".m4a";
         mediaRecorder.setOutputFile(fileName);
+        count++;
     }
 
-    public static void setAudioSamplingRate(int sampleRate) {
+    //set new fileName each time, count used so that recordings are never overwritten
+    public void setUpFile() {
+        if (inputtedText == null) {
+            String fileName = Environment.getExternalStorageDirectory() + File.separator +
+                    Environment.DIRECTORY_DOWNLOADS + File.separator + "my_recording" + count + addFileType();
+            mediaRecorder.setOutputFile(fileName);
+            count++;
+        } else {
+            String fileName = Environment.getExternalStorageDirectory() + File.separator +
+                    Environment.DIRECTORY_DOWNLOADS + File.separator + inputtedText + addFileType();
+            mediaRecorder.setOutputFile(fileName);
+        }
+    }
+
+    // adds the correct file extension to fileName
+    public String addFileType() {
+        String fileExt = null;
+        int fileType = Integer.parseInt(settings.getString("outputFormat", "5"));
+        switch (fileType) {
+            case 1:
+                fileExt = ".aac";
+                break;
+            case 2:
+                fileExt = ".3ga";
+                break;
+            case 3:
+                fileExt = ".3ga";
+                break;
+            case 4:
+                fileExt = ".ts";
+                break;
+            case 5:
+                fileExt = ".m4a";
+                break;
+            case 6:
+                fileExt = ".ogg";
+                break;
+            case 7:
+                fileExt = ".3gpp";
+                break;
+            case 8:
+                fileExt = ".webm";
+                break;
+        }
+        return fileExt;
+    }
+
+    public void setAudioSamplingRate(int sampleRate) {
         switch (sampleRate) {
             case 1:
                 mediaRecorder.setAudioSamplingRate(22000);
@@ -220,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void setAudioEncodingBitRate(int bitRate) {
+    public void setAudioEncodingBitRate(int bitRate) {
         switch (bitRate) {
             case 1:
                 mediaRecorder.setAudioEncodingBitRate(24000);
@@ -241,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public static void setOutputFormat(int outputFormat) {
+    public void setOutputFormat(int outputFormat) {
         switch (outputFormat) {
             case 1:
                 mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
@@ -271,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public static void setAudioCodec(int codec) {
+    public void setAudioCodec(int codec) {
         switch (codec) {
             case 1:
                 mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
@@ -305,18 +379,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //prepare and start recording after mediaRecorder set up
+    // prepare and start recording after mediaRecorder set up
+    // log error if prepare failed, for testing
     private void startRecording() {
         try {
             mediaRecorder.prepare();
         } catch (IOException e) {
-            Log.e(LOG_TAG, "prepare failed");
-            System.out.println("" + e);    //to display the error
+            Log.e("mRecorder error", "Prepare failed");
+            System.out.println("" + e);
         }
         mediaRecorder.start();
     }
 
-    //stop and call release method
+    // stop and call release method
     private void stopRecording() {
         mediaRecorder.stop();
         mediaRecorder.reset();
@@ -324,20 +399,20 @@ public class MainActivity extends AppCompatActivity {
         mediaRecorder = null;
     }
 
+    // could be switch statement in future if more permission codes needed, if statement fine
+    // for now as it's just the one
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_PERMISSION_CODE: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
-                }
+        if (requestCode == REQUEST_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    //request permissions
+    // request permissions
     private void requestPermission() {
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.RECORD_AUDIO,
@@ -345,7 +420,7 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_PERMISSION_CODE);
     }
 
-    //check if app has read, write and mic permissions
+    // check if app has read, write and mic permissions
     private boolean checkPermissions() {
         int writeExternalStorageResult = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int recordAudioResult = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
@@ -354,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
                 recordAudioResult == PackageManager.PERMISSION_GRANTED && readExternalStorageResult == PackageManager.PERMISSION_GRANTED;
     }
 
-    //menu in the top right
+    // menu in the top right
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -378,14 +453,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //creates intent to start Settings activity
+    // creates intent to start Settings activity
     public void openSettings() {
         Intent intent = new Intent(this, Settings.class);
         startActivity(intent);
     }
 
+    // create intent to open About page activity
     public void openAbout() {
-        //create intent to open About page activity
         Intent intent = new Intent(this, About.class);
         startActivity(intent);
     }
@@ -412,10 +487,10 @@ public class MainActivity extends AppCompatActivity {
         releaseMediaRecorder();
     }
 
+    // handle the keep screen on option in on resume
     @Override
     protected void onResume() {
         super.onResume();
-        // handle the keep screen on option in on resume
         handleScreen();
     }
 }

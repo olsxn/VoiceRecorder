@@ -34,10 +34,18 @@
     <string name="do_not_disturb_title">Do not disturb</string>
     <string name="do_not_disturb_summary">Switches your phone to do not disturb mode while recording</string>
 
-
-    <string name="recording_location_title">Recording location</string>
-    <string name="plus_sign">plus sign</string>
-    <string name="test_text">Hello this is a test for the expandable text view that I will use to explain various parts of the app</string>
-    <string name="inputText">Change your file name here</string>
-    <string name="changeButton">change</string>
+    <string name="inputText">Name your file here</string>
+    <string name="changeButton">Save</string>
+    <string name="about_this_app">About this app</string>
+    <string name="about_the_settings">About the settings</string>
+    <string name="audio_codec">Audio Codec</string>
+    <string name="codex_text">An audio codec is the software that compresses and decompressed a digital audio signal.</string>
+    <string name="sample_rate">Sample Rate</string>
+    <string name="sample_rate_text">Sample rate is the number of samples of audio carried per second, measured in Hz or kHz.</string>
+    <string name="bit_rate">Bit Rate</string>
+    <string name="bit_rate_text">Bitrate refers to the number of bits, or the amount of data, that are processed over a certain amount of time. In audio, this usually means kilobits per second.</string>
+    <string name="output_format">Output Format</string>
+    <string name="output_text">The format that your recording will be outputted in, e.g. MP4, 3GPP, etc.</string>
+    <string name="explanation">This app was created for my Android App Development project as part of my Computer Science course at Brighton University.</string>
+    <string name="my_name">Halil Olsen, 2020</string>
 </resources>
