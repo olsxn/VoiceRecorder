@@ -12,7 +12,7 @@ import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
 
-public class SettingsPreferences {
+class SettingsPreferences {
 
     private Context contextOfApp = MainActivity.getAppContext();
     private SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(contextOfApp);

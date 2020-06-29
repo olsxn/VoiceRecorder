@@ -37,26 +37,28 @@ public class MainActivity extends AppCompatActivity {
     private static Context appContext;
     private static MediaRecorder mediaRecorder;
     final int REQUEST_PERMISSION_CODE = 1000;
-    // vars for first time run of app
-    final String PREFS_NAME = "initialSettingsFile";
+
+    // to increment the fileName
     public int count = 0;
+
     Button startButton;
     Button changeButton;
     EditText changeText;
     Chronometer chronometer;
+
+    // prefs to hold defaults
     SharedPreferences initialSettings = null;
+    final String PREFS_NAME = "initialSettingsFile";
+
     // prefs to hold settings
     SharedPreferences settings = null;
     int outputFormat;
     int sampleRate;
     int bitRate;
     int codec;
-    private int clickCount = 0;
 
-    // getter for context
-    public static Context getAppContext() {
-        return appContext;
-    }
+    // for checking how many times button has been pressed
+    private int clickCount = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
@@ -92,8 +94,7 @@ public class MainActivity extends AppCompatActivity {
         changeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputtedText
-                        = changeText.getText().toString();
+                inputtedText = changeText.getText().toString();
             }
         });
 
@@ -124,6 +125,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    // getter for context
+    public static Context getAppContext() {
+        return appContext;
+    }
+
+    // I could use this method in the future to put the last inputtedText into a sharedPref String
+    // so that it would remember the last inputted name from the user and then add count to that
+    // but I like the way it handles this problem already with "my_recording" + count
+    // would be called when the save button is clicked
+    private void resetDefaultFileName() {
+        SharedPreferences.Editor fileNameEditor = settings.edit();
+        fileNameEditor.putString("fileName", inputtedText);
+        fileNameEditor.apply();
     }
 
     // starts recording timer
